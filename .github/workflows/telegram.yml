@@ -1,0 +1,43 @@
+name: Telegram Notification
+
+on:
+  push:
+    branches: # Match all branches
+      - '**'
+  pull_request:
+    branches: # Match all branches
+      - '**'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 *New Commit Alert by* `${{ github.actor }}` 🚀
+        
+            📄 *Commit Message:*
+            `${{ github.event.commits[0].message }}`
+        
+            🌿 *Branch:*
+            `${{ github.ref_name }}`
+        
+            📂 *Repository:*
+            `${{ github.repository }}`
+        
+            🔗 *View Commit:*
+            [Click here to see the changes](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        
+            🕒 *Timestamp:*
+            `${{ github.event.head_commit.timestamp }}`
+        
+            📝 *Commit Details:*
+            • *Author:* `${{ github.event.head_commit.author.name }}`
+            • *Email:* `${{ github.event.head_commit.author.email }}`
+            • *Commit ID:* `${{ github.sha }}`
+          format: markdownv2
